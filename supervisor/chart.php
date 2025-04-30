@@ -101,6 +101,7 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
         })
         .then(async res => {
           const text = await res.text();
+          console.log(text);
           console.log(text)
         try {
             const data = JSON.parse(text);
