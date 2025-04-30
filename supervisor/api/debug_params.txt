@@ -1,0 +1,8 @@
+Array
+(
+    [from] => 2025-04-21
+    [to] => 2025-05-20
+    [rfrom] => attcht
+    [filter_type] => week
+    [department] => 
+)

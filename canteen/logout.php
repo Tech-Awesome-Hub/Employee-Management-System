@@ -1,0 +1,9 @@
+<?php 
+session_start();
+if(!empty($_SESSION['name']))
+{
+	unset($_SESSION['name']);
+	unset($_SESSION['cur_loc']);
+	header('location:../index.php');
+}
+?>

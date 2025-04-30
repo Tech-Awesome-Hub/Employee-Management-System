@@ -1,0 +1,102 @@
+<?php
+session_start();
+if(empty($_SESSION['name']) || $_SESSION['role'] != 1)
+{
+    header('location:../index.php');
+}
+include('header.php');
+include('includes/connection.php');
+
+function getStatusLabel($status) {
+    switch ($status) {
+        case 0: return 'Inactive';
+        case 1: return 'Active';
+        case 2: return 'Suspended';
+        case 3: return 'On Leave';
+        case 4: return 'Terminated';
+        default: return 'Unknown';
+    }
+}
+
+function getRoleLabel($status) {
+    switch ($status) {
+        case 0: return 'Admin';
+        case 1: return 'HR';
+        case 2: return 'Supervisor';
+        case 3: return 'Manager';
+        case 4: return 'Factory Hand';
+        case 5: return 'Technician';
+        case 6: return 'Security Personel';
+        case 7: return 'Accountant';
+        case 8: return 'IT Manager';
+        default: return 'Unknown';
+    }
+}
+
+$department = $_SESSION['department'];
+?>
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="row">
+                    <div class="col-sm-4 col-3">
+                        <h4 class="page-title">Employees</h4>
+                    </div>
+                    
+                    <!-- <div class="col-sm-8 col-9 text-right m-b-20">
+                        <a href="add-employee.php" class="btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Employee</a>
+                    </div> -->
+                
+                </div>
+                <div class="table-responsive">
+                                    <table class="datatable table table-stripped ">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Username</th>
+                                            <!-- <th>Email</th> -->
+                                            <th>Role</th>
+                                            <th>Mobile</th>
+                                            <th>Department</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                
+                                        $fetch_query = mysqli_query($connection, "select * from tbl_employees where role!=1 and role!=3 and status=1");
+                                        while($row = mysqli_fetch_array($fetch_query))
+                                        {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $row['first_name']." ".$row['other_name']." ".$row['last_name']; ?></td>
+                                            <td><?php echo $row['username']; ?></td>
+                                            <td><?= getRoleLabel($row['role']) ?></td>
+                                            <td><?php echo $row['phone']; ?></td>
+                                            
+                                            <td>
+                                                <span class="custom-badge status-grey"><?php echo $row['department'];?></span>
+                                            </td>
+                                                <td><?php if($row['status']=="1"){ ?>
+                                                    <span class="custom-badge status-green">Active</span>
+                                                <?php } else{ ?>
+                                                    <span class="custom-badge status-red">Inactive</span>
+                                                <?php } ?>
+                                                </td>
+                                            
+                                        </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+				
+            </div>
+            
+        </div>
+
+
+<?php include('footer.php'); ?>
+<script language="JavaScript" type="text/javascript">
+function confirmDelete(){
+    return confirm('Are you sure want to delete this Employee?');
+}
+</script>

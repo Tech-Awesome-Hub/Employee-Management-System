@@ -1,0 +1,197 @@
+
+/* Wrapper for the table to make it scrollable on small screens */
+.table-wrapper {
+    width: 98%;
+    height: max-content;
+    height: auto;
+    max-height: 80dvh;
+    display: block;
+    overflow: hidden;
+    margin: auto;
+    /* background-color: red; */
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.responsive-table {
+    overflow-x: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Make sure the table takes full width */
+.table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse; /* Makes sure there’s no spacing between borders */
+    table-layout: fixed; /* Fixes column widths to adapt better to available space */
+}
+
+/* Table styling */
+th, td {
+    border: 0px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    /* white-space: nowrap; */
+}
+
+.checkbox-group {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    white-space: nowrap;
+    align-items: center !important;
+    justify-content: center !important;
+    /* background-color: blue; */
+}
+
+/* .form-check {
+    background-color: red;
+} */
+
+.status-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+.att-container {
+    height: 100%;
+    /* background-color: blue; */
+}
+
+.filter-card {
+    height: 0px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+}
+
+.input-cell {
+    width: 100px;
+    text-transform: capitalize;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+}
+.input-cell-name {
+    width: 130px;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+}
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    background: #0d6efd;
+    color: white;
+    z-index: 10;
+}
+.fill-btn {
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.m-auto {
+    margin: auto !important;
+}
+
+#chartContainer {
+    position: relative;
+    max-width: 100%;
+    height: 500px;  /* or whatever fits your layout */
+    margin: 0 auto;
+    background-color: #fff;
+}
+canvas#attendanceChart {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+/* Responsive form (for mobile/tablet) */
+@media screen and (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .table th, .table td {
+        font-size: 12px; /* Adjust font size for smaller screens */
+    }
+
+    .table-wrapper {
+        width: 98%;
+        overflow-y: scroll;
+    }
+        
+    .responsive-table {
+        display: block;
+        overflow-x: scroll;
+    }
+
+    /* Table styling */
+    th, td {
+        white-space: nowrap;
+    }
+   
+}
+
+
+/* Optional: Export button styling */
+.text-center {
+    text-align: center;
+}
+
+@media screen and (max-width: 576px) {
+    .table th, .table td {
+        font-size: 10px; /* Further reduce font size for very small screens */
+    }
+
+    /* Make sure the button is properly styled */
+    button[type="submit"] {
+        width: 100%; /* Makes the button full width on smaller screens */
+    }
+}
+
+
+@media screen and (min-width: 1200px) {
+    .tw-lg table{
+        max-width: 80% !important;
+        margin: auto !important;
+    }
+    
+}
+
+@media screen and (min-width: 770px) and ( max-width: 1200px) {
+    
+    .input-cell {
+        width: 90px;
+        text-transform: capitalize;
+        box-sizing: border-box;
+        font-size: 0.85rem;
+    }
+    .input-cell-name {
+        width: 100px;
+        box-sizing: border-box;
+        font-size: 0.85rem;
+    }
+
+}
+
+/* Ensure table wrapper covers more space on large screens*/
+@media screen and (min-width: 770px) {
+    .tb-lg {
+        table-layout: auto;
+        overflow-x: auto;
+        display: block !important;
+    }
+}
+
+
+
+

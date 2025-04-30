@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        .main-wrapper {
+            width: 100dvw;
+            height: 100dvh;
+            background-color: #eee;
+        }
+        .header {
+            width: 100%;
+            height: 40px;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            color: white;
+        }
+
+        .content {
+            width: 100%;
+            height: 90%;
+            /* background-image: url("assets/img/cropped-bomart-1.webp"); */
+            /* background-repeat: repeat-x; */
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .page-blocks {
+            width: 80%;
+            height: 150px;
+            border: 1px solid blue;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Page Header -->
+        <div class="header">
+            <span class="title">Welcome to our home page</span>
+        </div>
+        <!-- Page Body/Content -->
+        <div class="content">
+            <div class="page-blocks">
+                <button>View our services</button>
+            </div>
+            <div class="page-blocks">
+                <span>This is our landing page</span>
+            </div>
+            <div class="page-blocks">
+                <span>Call us on 0204889527</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
