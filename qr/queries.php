@@ -1,8 +1,4 @@
-CREATE DATABASE workers_db;
 
-USE workers_db;
-
--- Employees Table
 CREATE TABLE tbl_employees (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(250) NOT NULL,
@@ -68,27 +64,15 @@ CREATE TABLE tbl_admin (
 );
 
 CREATE TABLE tbl_users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(250) NOT NULL,
-    last_name VARCHAR(250) NOT NULL,
-    username VARCHAR(250) NOT NULL,
-    password VARCHAR(250) NOT NULL,
-    user_id VARCHAR(50) UNIQUE,
-    access ENUM('Full', 'Partial', 'View Only') DEFAULT 'Full';
-    role TINYINT DEFAULT 0,
-    status TINYINT DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE tbl_users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   employee_id VARCHAR(50) NOT NULL,
   username VARCHAR(100) UNIQUE,
   password VARCHAR(255),
-  role VARCHAR(20), -- e.g., 'supervisor', 'manager', etc.
+  access ENUM('Full', 'Partial', 'View Only') DEFAULT 'Full',
   role TINYINT DEFAULT 0,
   status TINYINT DEFAULT 0,
-  FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id)
+  FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE tbl_timesheet (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -97,6 +81,7 @@ CREATE TABLE tbl_timesheet (
   department VARCHAR(100) NOT NULL,
   date DATE NOT NULL,
   shift VARCHAR(30) NOT NULL,
+  estate VARCHAR(100) DEFAULT 'Processing Unit,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id) ON DELETE CASCADE
 );
@@ -153,24 +138,6 @@ CREATE TABLE tbl_estate (
     label VARCHAR(50),
     status TINYINT DEFAULT 0
 );
--- Leaves Table
-CREATE TABLE tbl__leaves (
-    leave_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    supervisor_id INT,
-    manager_id INT,
-    hr_id INT,
-    leave_type VARCHAR(50),
-    start_date DATE,
-    end_date DATE,
-    
-    leave_type ENUM('sick', 'casual', 'annual', 'unpaid', 'maternity') NOT NULL,
-    reason TEXT,
-    status ENUM('pending_supervisor', 'pending_manager', 'pending_hr', 'pending_final_manager', 'approved', 'rejected') DEFAULT 'pending_supervisor',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id)
-);
 
 CREATE TABLE tbl_leaves (
     code INT PRIMARY KEY,
@@ -197,8 +164,7 @@ CREATE TABLE tbl_leave_request (
     reviewed_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id) ON DELETE CASCADE,
+    FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id) ON DELETE CASCADE
 );
 
 CREATE TABLE tbl_notifications (
@@ -209,6 +175,7 @@ CREATE TABLE tbl_notifications (
     is_read TINYINT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 ALTER TABLE employees
 ADD COLUMN hr_role ENUM('Full Access', 'View Only') DEFAULT 'Full Access' AFTER role;
 

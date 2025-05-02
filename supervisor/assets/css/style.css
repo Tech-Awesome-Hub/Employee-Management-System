@@ -902,6 +902,10 @@ textarea.form-control {
 	width: 50px;
 	z-index: 10;
 }
+
+.mobile-user {
+	display: none;
+}
 .mobile-user-menu > a {
 	color: #fff;
 	padding: 0;
@@ -4796,6 +4800,9 @@ blockquote p {
 		display: none;
 	}
 	.mobile-user-menu {
+		display: block;
+	}
+	.mobile-user {
 		display: block;
 	}
 	.search-box {

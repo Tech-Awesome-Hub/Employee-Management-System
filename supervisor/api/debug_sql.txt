@@ -3,7 +3,7 @@
             a.employee_id,
             CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
             e.department AS department_name,
-            CONCAT(YEAR(a.attendance_date), '-W', WEEK(a.attendance_date, 3)) AS period_label,
+            CONCAT(YEAR(a.attendance_date), '-', LPAD(MONTH(a.attendance_date), 2, '0')) AS period_label,
             COUNT(*) AS total_days,
             SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) AS present_days,
             SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) AS absent_days,
@@ -11,8 +11,8 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN ? AND ? AND e.role != 3 AND e.status = 1 AND e.department IN (?)
-        GROUP BY a.employee_id, YEAR(a.attendance_date), WEEK(a.attendance_date, 3)
+        WHERE a.attendance_date BETWEEN ? AND ? AND e.role != 3 AND e.status = 1
+        GROUP BY a.employee_id, YEAR(a.attendance_date), MONTH(a.attendance_date)
         ORDER BY e.department, period_label
     
-["2025-04-21","2025-05-20",""]
+["2025-04-21","2025-05-20"]

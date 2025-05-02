@@ -1,4 +1,31 @@
 
+
+.p-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.dp-input {
+    max-width: 120px !important;
+    margin-left: 5px;
+    overflow: hidden !important;
+    vertical-align: baseline !important;
+}
+
+.dp-input select {
+    width: 200px;   
+    max-width: 100%; 
+}
+
+
+.dp-input select.form-control {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 /* Wrapper for the table to make it scrollable on small screens */
 .table-wrapper {
     width: 98%;
@@ -98,6 +125,10 @@ th, td {
     margin: auto !important;
 }
 
+#srchempbox {
+    border: 0.8px solid #eee;
+}
+
 #chartContainer {
     position: relative;
     max-width: 100%;
@@ -138,6 +169,10 @@ canvas#attendanceChart {
     th, td {
         white-space: nowrap;
     }
+
+    .p-title {
+        font-size: 14px;
+    }
    
 }
 
@@ -155,6 +190,10 @@ canvas#attendanceChart {
     /* Make sure the button is properly styled */
     button[type="submit"] {
         width: 100%; /* Makes the button full width on smaller screens */
+    }
+
+    .p-title {
+        font-size: 12px;
     }
 }
 

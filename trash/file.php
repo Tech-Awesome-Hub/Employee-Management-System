@@ -1,6 +1,57 @@
 
 
-
+<div class="card shadow-sm d-lg-block d-none">
+                    <div class="card-header text-dark d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 d-lg-block d-none">Atendance Report</h4>
+                        <div class='d-lg-flex d-none justify-content-between align-items-center'>
+                            <button class="btn btn-light btn-sm" onclick="exportTableToExcel('reportTable','Attendance Report')">Export Excel</button>
+                            <button class="btn btn-light btn-sm ml-2" onclick="exportToPDF('',14, 10,20,'Attendance Report')">Export PDF</button>
+                            <input type='button' onclick='showFilter(this)' class="btn btn-primary btn-sm ml-2" value='Show'/>
+                        </div>
+                    </div>
+                    <?php if (!empty($selectedEmp)): ?>
+                       <div class="card-body" id='att-filter-card'>
+                    <?php else : ?>
+                        <div class="card-body filter-card" id='att-filter-card'>
+                    <?php endif; ?>
+                        <form method="GET" class="mb-0" id='attrpfm'>
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label>Filter By</label>
+                                    <select name="filter_type" class="form-control">
+                                        <option value="day" <?= $filter_type == 'day' ? 'selected' : '' ?>>Day</option>
+                                        <option value="week" <?= $filter_type == 'week' ? 'selected' : '' ?>>Week</option>
+                                        <option value="month" <?= $filter_type == 'month' ? 'selected' : '' ?>>Month</option>
+                                        <option value="year" <?= $filter_type == 'year' ? 'selected' : '' ?>>Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label>From</label>
+                                    <input type="date" name="from" class="form-control" value="<?= $_GET['from'] ?? '' ?>" required>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label>To</label>
+                                    <input type="date" name="to" class="form-control" value="<?= $_GET['to'] ?? '' ?>" id="" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Employee</label>
+                                    <select name="employee_id" class="form-control" id="rempid">
+                                        <option value="">All</option>
+                                        <?php while ($emp = mysqli_fetch_assoc($employeeResult)): ?>
+                                            <option value="<?= $emp['employee_id'] ?>" <?= ($selectedEmp == $emp['employee_id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($emp['first_name']) ?> <?= htmlspecialchars($emp['last_name']) ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-success w-100">Apply Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
 
 function fillRow(btn, shift) {
         const row = btn.closest("tr");

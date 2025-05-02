@@ -17,65 +17,35 @@
 
 <div class="page-wrapper">
     <div class="content">
-        <!-- <div class="row"> -->
 
             <div class="container mt-2">
-
-                <div class="card shadow-sm d-lg-block d-none">
-                    <div class="card-header text-dark d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0 d-lg-block d-none">Timesheet</h4>
-                        <div class='d-flex justify-content-between align-items-center'>
-                            <button class="btn btn-danger btn-sm" onclick="exportTableToExcel('timesheetTable', 'Timesheet')">Export Excel</button>
-                            <button class="btn btn-green btn-sm ml-2" onclick="exportToPDF('#timesheetTable', 14, 16,20, 'Weekly Timesheet')">Export PDF</button>
-                            <a href="timesheet.php" class="btn btn-primary btn-sm ml-2">New</a>
-                            <input type='button' onclick='showFilter(this)' class="btn btn-primary btn-sm ml-2" value='Show'/>
-                        </div>
-                    </div>
-                    <?php if (!empty($selectedEmp)): ?>
-                       <div class="card-body" id='att-filter-card'>
-                    <?php else : ?>
-                        <div class="card-body filter-card" id='att-filter-card'>
-                    <?php endif; ?>
-                        <!-- <form method="GET" class="mb-0"> -->
-                            <div class="form-row" style="align-items:center;justify-content:center;">
-                                <div class="mb-3 d-flex align-items-center">
-                                    <label class="mr-2">Select Week:</label>
-                                    <input type="week" id="isoWeek" class="form-control w-auto mr-2" />
-                                </div>
-                                <div class="form-group col-md-3 d-flex align-items-end">
-                                    <button class="btn btn-primary w-100" onclick="loadFromWeekPicker()">Load Week</button>
-                                </div>
-                            </div>
-                        <!-- </form> -->
-                    </div>
-                </div>
-                
-                <div class="card shadow-sm d-lg-none d-block">
+                <div class="card shadow-sm">
                     <div class="card-header ">
-                        <div class="dropdown has-arrow text-dark d-flex justify-content-between align-items-center">
-                                <button class="btn btn-light btn-sm" onclick="exportTableToExcel('timesheetTable', 'Timesheet')">Export Excel</button>
-                                <button class="btn btn-light btn-sm" onclick="exportToPDF('#timesheetTable', 14, 16,20, 'Weekly Timesheet')">Export PDF</button>
-                                <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >Show</button>
-                           
+                        <div class="dropdown has-arrow text-dark d-flex justify-content-end align-items-center">
+                            <div class="w-50">
+                                <h4 class="p-title positiion-relative float-left">Timesheet</h4>
+                            </div>
+                            <div class="w-50">
+                                <a href="timesheet.php" class="btn btn-primary btn-sm float-right mr-2">New</a>
+                                <button class="btn btn-success btn-sm float-right mr-2" onclick="exportTableToExcel('timesheetTable', 'Timesheet')"><i class="fa fa-file-excel-o"></i></button>
+                                <button class="btn btn-danger btn-sm float-right mr-2" onclick="exportToPDF('#timesheetTable', 14, 16,20, 'Weekly Timesheet')"><i class="fa fa-file-pdf-o"></i></button>
+                            </div>
+                            <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >Show</button>
+                            
                             <div class="dropdown-menu">  
                                 <div class="card-body">
-                                    
-                                    <div class="form-row" style="align-items:center;justify-content:center;">
-                                        <div class="mb-3 d-flex align-items-center">
-                                            <label class="mr-2">Select Week:</label>
-                                            <input type="week" id="isoWeek" class="form-control w-auto mr-2" />
-                                        </div>
-                                        <div class="form-group col-md-3 d-flex align-items-end">
+                                    <form method="GET" class="mb-0">
+                                        <div class="form-row" style="display:flex;align-items:center;justify-content:center; flex-direction: row; gap:10px;">
+                                            <input type="week" id="isoWeek" class="form-control w-100 mr-2" />
                                             <button class="btn btn-primary w-100" onclick="loadFromWeekPicker()">Load Week</button>
                                         </div>
-                                    </div>
-                                   
+                                    </form>
                                 </div>
-                            
+                            <!-- CARD BODY END -->
                             </div>
                         </div>
                     </div>  
-                   
+
                 </div>
             </div>
             <div class="table-wrapper">

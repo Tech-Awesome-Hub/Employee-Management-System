@@ -253,6 +253,68 @@ function cusr($connection, $data) {
     $stmt->close();
 }
 
+function sts($connection, $data) {
+
+    if (!isset($data['entry'])) {
+        echo json_encode(['status' => 'error', 'message' => 'No data']);
+        exit;
+    }
+
+    $entries = $data['entry'];
+    $week_start_date = $data['week_start_date'] ?? date('Y-m-d');
+    $supervisor_id = $_SESSION['id'];
+    $department = $_SESSION['department'];
+
+    foreach ($entries as $employee_id => $weeks) {
+        foreach ($weeks as $week => $days) {
+            foreach ($days as $dayName => $shift) {
+                if (!empty($shift)) {
+                    // Calculate date for the specific day
+                    $offsetDays = 0;
+                    if ($week == 'week1') {
+                        $offsetDays = array_search($dayName, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+                    } elseif ($week == 'week2') {
+                        $offsetDays = 7 + array_search($dayName, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+                    }
+
+                    $date_for_entry = date('Y-m-d', strtotime($week_start_date . " +$offsetDays days"));
+
+                    // Check if record exists
+                    $check = $connection->prepare("SELECT id FROM tbl_timesheet WHERE employee_id = ? AND date = ?");
+                    $check->bind_param("ss", $employee_id, $date_for_entry);
+                    $check->execute();
+                    $check->store_result();
+
+                    if ($check->num_rows > 0) {
+                        // UPDATE existing record
+                        $check->bind_result($id);
+                        $check->fetch();
+
+                        $update = $connection->prepare("UPDATE tbl_timesheet SET shift = ?, supervisor_id = ?, department = ? WHERE id = ?");
+                        $update->bind_param("sisi", $shift, $supervisor_id, $department, $id);
+                        
+                        if ($update->execute()) {
+                         echo json_encode(['success' => true, 'message' => 'Data updated sucessfully.']);
+                        } else {
+                         echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+                        }
+                    } else {
+                        // INSERT new record
+                        $insert = $connection->prepare("INSERT INTO tbl_timesheet (employee_id, supervisor_id, department, date, shift) VALUES (?, ?, ?, ?, ?)");
+                        $insert->bind_param("sisss", $employee_id, $supervisor_id, $department, $date_for_entry, $shift);
+                        $insert->execute();
+                        if ($insert->execute()) {
+                        echo json_encode(['success' => true, 'message' => 'Data updated sucessfully.']);
+                        } else {
+                        echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -270,6 +332,9 @@ elseif ($from == 'reqlev'){
 }
 elseif ($from == 'mknot') {
     mknot($connection);
+}
+elseif ($from == 'sts') {
+    sts($connection, $data);
 }
 else {
     echo json_encode(['success' => false, 'message' => $from]);

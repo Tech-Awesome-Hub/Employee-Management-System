@@ -1,6 +1,7 @@
 
 "use strict";
 
+
 function showSessionExpiredPopup() {
     const modal = document.getElementById('sessionExpiredModal');
     modal.style.display = 'block';
@@ -11,8 +12,8 @@ function redirectToLogin() {
 }
 
 
-function getEmpbyShift(shift) {
-    loadATT(shift);
+function getEmpbyShift(shift, estate) {
+    loadATT(shift, estate);
 }
 
 function exportTableToExcel(tbl, title) {
@@ -197,7 +198,7 @@ function loadData(url, func) {
         if (!response.success) {
                        
             // Check if server said "Unauthorized"
-            if (data.message === "Unauthorized") {
+            if (response.message === "Unauthorized") {
                 showSessionExpiredPopup();
             } else {
                 alert(response.message || 'Error loading data.');
@@ -277,3 +278,66 @@ function markAsRead(id, element) {
         document.getElementById('notifCount').innerText = Math.max(0, current - 1);
     });
 }
+
+
+function sts() {
+        
+    const entries = {};
+    const rows = document.querySelectorAll('#timesheet-table tbody tr');
+
+    rows.forEach(row => {
+        const employeeInput = row.querySelector('.input-cell-name');
+        if (!employeeInput) return;
+
+        const match = employeeInput.name.match(/\[([^\]]+)\]/);
+        if (!match) {
+        console.warn('Invalid name format:', employeeInput.name);
+        return;
+        }
+
+        const employeeId = match[1];
+        
+        const weekInputs = row.querySelectorAll('.shift-input');
+        let inputIndex = 0;
+
+        ['week1', 'week2'].forEach(week => {
+            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(day => {
+                const shiftInput = weekInputs[inputIndex++];
+                const shift = shiftInput.value;
+
+                if (!entries[employeeId]) entries[employeeId] = {};
+                if (!entries[employeeId][week]) entries[employeeId][week] = {};
+
+                entries[employeeId][week][day] = shift;
+            });
+        });
+    });
+
+    const payload = {
+        entry: entries,
+        week_start_date: document.getElementById('weekStartDate')?.value || new Date().toISOString().slice(0, 10)
+    };
+
+    fetch('./api/dt197.php$rfrom=sts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.text())
+    .then(response => {
+
+        const data =JSON.parse(response);
+        if (data.success) {
+            document.getElementById('timesheet-form').reset();
+        } else {
+            alert(data.message || 'Submission failed.');
+        }
+
+        
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Error saving timesheet.');
+    });
+}
+

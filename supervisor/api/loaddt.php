@@ -82,6 +82,7 @@ function getempbyshift($connection){
     $department = $_SESSION['department'] ?? '';
     $shift = isset($_GET['shift']) ? trim($_GET['shift']) : '';
     $date = isset($_GET['date']) ? trim($_GET['date']) : date('Y-m-d');
+    $estate = isset($_GET['estate']) ? trim($_GET['estate']) : '';
 
     $stmt = $connection->prepare("
         SELECT e.employee_id, CONCAT(e.first_name, ' ', e.last_name) AS employee_name 
@@ -91,6 +92,7 @@ function getempbyshift($connection){
         AND e.role = 4 
         AND t.shift = ? 
         AND t.department = ? 
+        AND t.estate = ? 
         AND e.status = 1
         ORDER BY e.first_name
     ");
@@ -99,7 +101,7 @@ function getempbyshift($connection){
         die('Prepare failed: ' . $connection->error);
     }
 
-    $stmt->bind_param('sss', $date, $shift, $department);
+    $stmt->bind_param('ssss', $date, $shift, $department, $estate);
     $stmt->execute();
     $result = $stmt->get_result();
 

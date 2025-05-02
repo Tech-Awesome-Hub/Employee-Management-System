@@ -4,11 +4,11 @@ include('header.php');
 include('includes/connection.php');
 
 if (empty($_SESSION['name'])) {
-    header("Location: ../index.php");
+    echo "<script>window.location.href='../index.php';</script>";
     exit();
 }
 if ($_SESSION['role'] != 3) {
-    header("Location: ../index.php");
+    echo "<script>window.location.href='../index.php';</script>";
     exit();
 }
 
@@ -35,7 +35,7 @@ $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         <?php if (!empty($attendanceData)): ?>
             <div class="table-wrapper">
-                <form id="timesheet-form" method="POST" action="./api/save_timesheet.php">
+                <form id="timesheet-form" method="POST">
                     <input type="hidden" name="week_start_date" value="<?= date('Y-m-d', strtotime('monday this week')) ?>">
                     <table class="table table-bordered text-center align-middle responsive-table tb-lg" id="timesheet-table">
                         <thead class="sticky-header">
@@ -65,7 +65,7 @@ $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                                         <?php foreach ($days as $day): ?>
                                             <td>
                                                 <input type="text" name="entry[<?= $emp['employee_id'] ?>][week<?= $week ?>][<?= $day ?>]" 
-                                                    class="form-control input-cell shift-input" placeholder="Day/Night/Off">
+                                                    class="form-control input-cell shift-input" placeholder="Day/Night/Off" required>
                                             </td>
                                         <?php endforeach; ?>
                                     <?php endfor; ?>
@@ -83,7 +83,7 @@ $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 <script>
 function submitTimesheet() {
-    document.getElementById('timesheet-form').submit();
+    sts();
 }
 </script>
 

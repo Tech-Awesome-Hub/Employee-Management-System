@@ -21,7 +21,7 @@ include('includes/connection.php');
                 </div>
                 <div class="table-wrapper tw-lg">
                                     <table class="datatable table responsive-table table-stripped ">
-                                    <thead>
+                                    <thead class="sticky-header">
                                         <tr>
                                             <th>ID</th>
                                             <th>Shift</th>

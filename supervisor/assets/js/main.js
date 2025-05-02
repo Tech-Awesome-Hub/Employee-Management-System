@@ -1,5 +1,9 @@
 $(function() {
 
+    if(window.x_name == 'reports') {
+        
+    }
+
     // loadNotifications();
     // setInterval(loadNotifications, 30000);
     // getattchart();
@@ -15,6 +19,24 @@ $(function() {
     //     loadATTRPT(filter_type, from, to, employee_id);
     // });
 
+    document.querySelectorAll('.searchInput').forEach(element => {
+        element.addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#stable tbody tr');
+        
+            rows.forEach(row => {
+                const nameCell = row.cells[1].textContent.toLowerCase();
+                row.style.display = nameCell.includes(filter) ? '' : 'none';
+            });
+        });
+    });
+
+    $('#mkattfm').on('click', async function(e) {
+        const estate = document.getElementById("attest").value;
+        const shift =  document.getElementById("attsht").value;
+        getEmpbyShift(estate, shift);
+    });
+    
     $('#userAccountForm').on('submit', async function(e) {
         e.preventDefault();
       
@@ -84,38 +106,35 @@ $(function() {
         }
     });
 
-    function getattchart(){
-        fetch('./api/attendance_chart_data.php?type=monthly&department=IT')
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels, // e.g., ["Jan", "Feb", "Mar"]
-                    datasets: [{
-                        label: 'Present Days',
-                        data: data.present_days,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    }, {
-                        label: 'Absent Days',
-                        data: data.absent_days,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'top' },
-                        title: {
-                            display: true,
-                            text: 'Monthly Attendance'
-                        }
-                    }
-                }
-            });
-        });
-
-    }
+    
 });
+
+function loadATTRPT(filter, from, to, employee_id, onload) {
+    const filter_type = filter ? filter : '';
+    const dttfrom = from ? from : '';
+    const dttto = to ? to : '';
+    const id = employee_id ? employee_id : '';
+
+    if(onload == true) url = `./api/loaddt.php?shift=${encodeURIComponent(s)}&from=attrpt`;
+    else {
+        url = `./api/loaddt.php?filter_type=${encodeURIComponent(filter_type)}&
+        from=${encodeURIComponent(from)}&
+        to=${encodeURIComponent(to)}&
+        employee_id=${encodeURIComponent(id)}&
+        rfrom=attrpt`;
+    }
+
+    loadData(url,function(response){
+        setTableBody(response.data, filter_type, response.expected);
+    });
+}
+  
+function loadATT(shift, estate) {
+    s = shift ? shift.toUpperCase() : '';
+    url = `./api/loaddt.php?shift=${encodeURIComponent(s)}&shift=${encodeURIComponent(estate)}&rfrom=mkatt`;
+    alert(url)
+    loadData(url,function(response){
+        setTableBody(response.data);
+    });
+}
+
