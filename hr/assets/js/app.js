@@ -8,7 +8,6 @@ $(document).ready(function($) {
 	// Variables declarations
 	var $wrapper = $('.main-wrapper');
 	var $pageWrapper = $('.page-wrapper');
-	var $slimScrolls = $('.slimscroll');
 	var $sidebarOverlay = $('.sidebar-overlay');
 	
 	// Sidebar
@@ -91,48 +90,27 @@ $(document).ready(function($) {
 		}).trigger('blur');
 	}
 	
-	// Right Sidebar Scroll
-	if($('#msg_list').length > 0) {
-		$('#msg_list').slimscroll({
-			height: '100%',
-			color: '#878787',
-			disableFadeOut: true,
-			borderRadius: 0,
-			size: '4px',
-			alwaysVisible: false,
-			touchScrollStep: 100
-		});
-		var msgHeight = $(window).height() - 124;
-		$('#msg_list').height(msgHeight);
-		$('.msg-sidebar .slimScrollDiv').height(msgHeight);
-		$(window).resize(function() {
-			var msgrHeight = $(window).height() - 124;
-			$('#msg_list').height(msgrHeight);
-			$('.msg-sidebar .slimScrollDiv').height(msgrHeight);
-		});
+	const msgList = document.getElementById('msg_list');
+	if (msgList) {
+		const resizeMsgList = () => {
+		msgList.style.maxHeight = (window.innerHeight - 124) + 'px';
+		};
+		resizeMsgList();
+		window.addEventListener('resize', resizeMsgList);
 	}
 	
-	// Left Sidebar Scroll
-	if($slimScrolls.length > 0) {
-		$slimScrolls.slimScroll({
-			height: 'auto',
-			width: '100%',
-			position: 'right',
-			size: '7px',
-			color: '#ccc',
-			wheelStep: 10,
-			touchScrollStep: 100
+	const slimScrolls = document.querySelectorAll('.slim-scroll');
+	if (slimScrolls.length > 0) {
+		const resizeSidebar = () => {
+		const newHeight = window.innerHeight - 60;
+		slimScrolls.forEach(el => {
+			el.style.maxHeight = newHeight + 'px';
 		});
-		var wHeight = $(window).height() - 60;
-		$slimScrolls.height(wHeight);
-		$('.sidebar .slimScrollDiv').height(wHeight);
-		$(window).resize(function() {
-			var rHeight = $(window).height() - 60;
-			$slimScrolls.height(rHeight);
-			$('.sidebar .slimScrollDiv').height(rHeight);
-		});
+		};
+		resizeSidebar();
+		window.addEventListener('resize', resizeSidebar);
 	}
-	
+
 	// Page wrapper height
 	var pHeight = $(window).height();
 	$pageWrapper.css('min-height', pHeight);

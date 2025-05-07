@@ -90,25 +90,13 @@
                         </li>
                         <li>
                             <a href="employees.php"><i class="fa fa-users"></i> <span>Employees</span></a>
-                        </li>
-                        <li>
-                            <a href="attendance.php"><i class="fa fa-calendar"></i> <span>Attendance Form</span></a>
-                        </li>               
-                        <li>
-                            <a href="shift.php"><i class="fa fa-clock-o"></i> <span>Shift</span></a>
-                        </li>
+                        </li> 
                         <li>
                             <a href="report.php"><i class="fa fa-file-text-o"></i> <span>View Report</span></a>
                         </li>
                         <li>
-                            <a href="leave-form.php"><i class="fa fa-check"></i> <span>Leave Applications</span></a>
-                        </li>       
-                        <li>
-                            <a href="create-users.php"><i class="fa fa-user"></i> <span>Create User</span></a>
-                        </li>   
-                        <li>
-                            <a href="weekly-timesheet.php"><i class="fa fa-table"></i> <span>Timesheet</span></a>
-                        </li>      				                       
+                            <a href="leave-applications.php"><i class="fa fa-check"></i> <span>Leave Applications</span></a>
+                        </li>           				                       
                     </ul>
                 
                 </div>

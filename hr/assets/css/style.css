@@ -902,6 +902,10 @@ textarea.form-control {
 	width: 50px;
 	z-index: 10;
 }
+
+.mobile-user {
+	display: none;
+}
 .mobile-user-menu > a {
 	color: #fff;
 	padding: 0;
@@ -1040,6 +1044,11 @@ textarea.form-control {
 }
 .page-wrapper > .content {
 	padding: 30px;
+	/* height: fit-content;
+	max-height: 60% !important; 
+	overflow: hidden;
+	background-color: black;
+	overflow-y: auto; */
 }
 
 /*-----------------
@@ -4791,6 +4800,9 @@ blockquote p {
 		display: none;
 	}
 	.mobile-user-menu {
+		display: block;
+	}
+	.mobile-user {
 		display: block;
 	}
 	.search-box {

@@ -108,7 +108,7 @@ $department = $_SESSION['department'];
 					  <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                         <div class="card member-panel">
 							<div class="card-header bg-white">
-								<h4 class="card-title mb-0">Recent Leaves</h4>
+								<h4 class="card-title mb-0">Active Leaves</h4>
 							</div>
                             <div class="card-body">
                                 <ul class="contact-list">
@@ -140,7 +140,7 @@ $department = $_SESSION['department'];
                     <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                         <div class="card member-panel">
 							<div class="card-header bg-white">
-								<h4 class="card-title mb-0">Active Leaves</h4>
+								<h4 class="card-title mb-0">Attendance By Month - 2025</h4>
 							</div>
                             <div class="card-body">
                                 <ul class="contact-list">

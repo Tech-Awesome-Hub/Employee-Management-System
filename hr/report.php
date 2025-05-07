@@ -3,13 +3,17 @@
       include('header.php');
       include('includes/connection.php');
       
-      if (empty($_SESSION['name']) || $_SESSION['role'] != 1) {
-          header("Location: ../index.php");
-          exit();
-      }
+        if (empty($_SESSION['name'])) {
+            echo "<script>window.location.href='../index.php';</script>";
+            exit();
+        }
+        if ($_SESSION['role'] != 1) {
+            echo "<script>window.location.href='../index.php';</script>";
+            exit();
+        }  
       
       $supervisor_id = $_SESSION['id'];
-      $dept = $_SESSION['department'];
+      $department = $_SESSION['department'];
       $today = date('Y-m-d');
       $day = date('d');
       
@@ -41,7 +45,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$dept' $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'week') {
         $sql = "
@@ -53,7 +57,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$dept' $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'month') {
         $sql = "
@@ -65,7 +69,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$dept' $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'year') {
         $sql = "
@@ -77,85 +81,102 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$dept' $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     }
     
-      
-      $result = mysqli_query($connection, $sql);
-      $attendanceData = mysqli_fetch_all($result, MYSQLI_ASSOC);
-      
-      $employeeSql = "SELECT employee_id, first_name, last_name FROM tbl_employees WHERE department = '$dept'";
-      $employeeResult = mysqli_query($connection, $employeeSql);
-      $expected = ceil((strtotime($end) - strtotime($start)) / (7 * 86400)) * 5;
+    
+    $result = mysqli_query($connection, $sql);
+    $attendanceData = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    $employeeSql = "SELECT employee_id, first_name, last_name FROM tbl_employees WHERE role != 3 AND department = ? AND status = 1";
+    $stmt = $connection->prepare($employeeSql);
+
+    if (!$stmt) {
+        die('Prepare failed: ' . $connection->error);
+    }
+
+    $stmt->bind_param('s', $department); 
+    $stmt->execute();
+    $employeeResult = $stmt->get_result();
+    $stmt->close();
+    $expected = ceil((strtotime($end) - strtotime($start)) / (7 * 86400)) * 5;
 
 ?>
 
 <div class="page-wrapper">
     <div class="content">
-        <div class="row">
-            <div class="container mt-4">
+        <!-- <div class="row"> -->
+
+            <div class="container mt-2">
+
                 <div class="card shadow-sm">
-                    <div class="card-header text-dark d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0 d-lg-block d-none">Attendance Report</h4>
-                        <div class='d-flex justify-content-between align-items-center'>
-                            <button class="btn btn-light btn-sm" onclick="exportTableToExcel()">Export Excel</button>
-                            <button class="btn btn-light btn-sm" onclick="exportToPDF()">Export PDF</button>
-                            <input type='button' onclick='showFilter(this)' class="btn btn-primary btn-sm ml-3" value='Show'/>
-                        </div>
-                    </div>
-                    <?php if (!empty($selectedEmp)): ?>
-                       <div class="card-body" id='att-filter-card'>
-                    <?php else : ?>
-                        <div class="card-body filter-card" id='att-filter-card'>
-                    <?php endif; ?>
-                        <form method="GET" class="mb-0">
-                            <div class="form-row">
-                                <div class="form-group col-md-2">
-                                    <label>Filter By</label>
-                                    <select name="filter_type" class="form-control">
-                                        <option value="day" <?= $filter_type == 'day' ? 'selected' : '' ?>>Day</option>
-                                        <option value="week" <?= $filter_type == 'week' ? 'selected' : '' ?>>Week</option>
-                                        <option value="month" <?= $filter_type == 'month' ? 'selected' : '' ?>>Month</option>
-                                        <option value="year" <?= $filter_type == 'year' ? 'selected' : '' ?>>Year</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-2">
-                                    <label>From</label>
-                                    <input type="date" name="from" class="form-control" value="<?= $_GET['from'] ?? '' ?>" required>
-                                </div>
-                                <div class="form-group col-md-2">
-                                    <label>To</label>
-                                    <input type="date" name="to" class="form-control" value="<?= $_GET['to'] ?? '' ?>" required>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>Employee</label>
-                                    <select name="employee_id" class="form-control">
-                                        <option value="">All</option>
-                                        <?php while ($emp = mysqli_fetch_assoc($employeeResult)): ?>
-                                            <option value="<?= $emp['employee_id'] ?>" <?= ($selectedEmp == $emp['employee_id']) ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($emp['first_name']) ?> <?= htmlspecialchars($emp['last_name']) ?>
-                                            </option>
-                                        <?php endwhile; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-3 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-success w-100">Apply Filter</button>
-                                </div>
+                    <div class="card-header ">
+                        <div class="dropdown has-arrow text-dark d-flex justify-content-end align-items-center">
+                            <div class="" style="width: 30%;">
+                                <h4 class="p-title positiion-relative float-left">REPORT</h4>
                             </div>
-                        </form>
-                    </div>
+                            <div class="" style="width: 70%;">
+                                <a class="btn btn-primary btn-sm float-right mr-2" href="chart.php"><i class="fa fa-bar-chart"></i></a>
+                                <button class="btn btn-success btn-sm float-right mr-2" onclick="exportTableToExcel()"><i class="fa fa-file-excel-o"></i></button>
+                                <button class="btn btn-danger btn-sm float-right mr-2" onclick="exportToPDF()"><i class="fa fa-file-pdf-o"></i></button>
+                            </div>
+                            <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" >Show</button>
+                               
+                            <div class="dropdown-menu">  
+                                <div class="card-body">
+                                    <form method="GET" class="mb-0">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-2">
+                                                <label>Filter By</label>
+                                                <select name="filter_type" class="form-control">
+                                                    <option value="day" <?= $filter_type == 'day' ? 'selected' : '' ?>>Day</option>
+                                                    <option value="week" <?= $filter_type == 'week' ? 'selected' : '' ?>>Week</option>
+                                                    <option value="month" <?= $filter_type == 'month' ? 'selected' : '' ?>>Month</option>
+                                                    <option value="year" <?= $filter_type == 'year' ? 'selected' : '' ?>>Year</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label>From</label>
+                                                <input type="date" name="from" class="form-control" value="<?= $_GET['from'] ?? '' ?>" required>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label>To</label>
+                                                <input type="date" name="to" class="form-control" value="<?= $_GET['to'] ?? '' ?>" required>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label>Employee</label>
+                                                <select name="employee_id" class="form-control">
+                                                    <option value="">All</option>
+                                                    <?php while ($emp = mysqli_fetch_assoc($employeeResult)): ?>
+                                                        <option value="<?= $emp['employee_id'] ?>" <?= ($selectedEmp == $emp['employee_id']) ? 'selected' : '' ?>>
+                                                            <?= htmlspecialchars($emp['first_name']) ?> <?= htmlspecialchars($emp['last_name']) ?>
+                                                        </option>
+                                                    <?php endwhile; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-3 d-flex align-items-end">
+                                                <button type="submit" class="btn btn-success w-100">Apply Filter</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            <!-- CARD BODY END -->
+                            </div>
+                        </div>
+                    </div>  
+                   
                 </div>
             </div>
 
-            <!-- Attendance Table -->
+            <!-- Report Table -->
             <?php if (!empty($attendanceData)): ?>
             <div class="table-wrapper">
-                <table id="reportTable" class="table table-bordered table-responsive">
-                    <thead class="bg-primary text-white">
+                <table id="attrpt" class="datatable table table-stripped responsive-table">
+                    <thead class="bg-primary text-white sticky-header">
                         <!--  table-responsive -->
                         <tr>
-                            <th>Employee ID</th>
+                            <th>Emp ID</th>
                             <th>Name</th>
                             <?php if ($filter_type == 'day'): ?>
                                 <th>Date</th>
@@ -223,10 +244,10 @@
             </div>
             <?php else: ?>
                 <div class="table-wrapper">
-                    <table class="table table-bordered table-responsive">
-                        <thead class="thead-light">
+                    <table id="reportTable" class="datatable table responsive-table table-stripped">
+                        <thead class="bg-primary text-white">
                             <tr>
-                                <th>Employee ID</th>
+                                <th>Emp ID</th>
                                 <th>Name</th>
                                 <?php if ($filter_type == 'day'): ?>
                                     <th>Date</th>
@@ -242,24 +263,85 @@
                                 <th>Absent</th>
                                 <th>Leave</th>
                                 <th>Off</th>
-                                <th>No. Overtime</th>
+                                <th>Overtime</th>
                                 <th>Canteen</th>
                                 <?php if ($filter_type == 'month'): ?>
-                                    <th>Total Deduction</th>
+                                    <th>Total Deductions</th>
                                 <?php elseif ($filter_type == 'year'): ?>
-                                    <th>Total Deduction</th>
+                                    <th>Total Deductions</th>
                                 <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="8" class="text-center">No data available</td>
+                                <td colspan="10" class="text-center">No data available</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             <?php endif; ?>
-        </div>
+        <!-- </div> -->
     </div>
 </div>
 <?php include('footer.php'); ?>
+
+<script>
+
+    window.name="reports";
+    
+    function setTableBody(data, filter_type, expt) {
+
+        const tbody = document.querySelector("#attrpt tbody");
+
+        // Loop over employees
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            
+            // Employee ID and Name
+            tr.innerHTML = `
+                <td>${row.employee_id}</td>
+                <td>${row.employee_name}</td>
+            `;
+
+            // Handle filter types and display period accordingly
+            if (filter_type === 'day') {
+                tr.innerHTML += `<td>${row.period_label}</td>`;
+            } else if (filter_type === 'week') {
+                const weekInfo = row.period_label.split('-W');
+                const year = weekInfo[0];
+                const week = weekInfo[1];
+                const month = new Date(year + '-W' + week).toLocaleString('default', { month: 'long' });
+                tr.innerHTML += `
+                    <td>${week}</td>
+                    <td>${month} / ${year}</td>
+                `;
+            } else if (filter_type === 'month') {
+                const [year, monthNum] = row.period_label.split('-');
+                const monthName = new Date(year, monthNum - 1).toLocaleString('default', { month: 'long' });
+                tr.innerHTML += `<td>${monthName} ${year}</td>`;
+            } else if (filter_type === 'year') {
+                tr.innerHTML += `<td>${row.period_label}</td>`;
+            }
+
+            // Add other columns like present, absent, leave, off days
+            tr.innerHTML += `
+                <td>${row.present_days}</td>
+                <td>${row.absent_days}</td>
+                <td>${row.leave_days}</td>
+                <td>${row.off_days}</td>
+                <td>${Math.max(0, row.present_days - expt)}</td>
+                <td>${row.present_days}</td>
+            `;
+
+            // Add extra columns for specific filters (e.g., month or year)
+            if (filter_type === 'month' || filter_type === 'year') {
+                tr.innerHTML += `<td>0</td>`;
+            }
+        
+            tbody.innerHTML = ""; // clear old rows
+            // Append the row to the table body
+            tbody.appendChild(tr);
+    });
+    }
+
+</script>

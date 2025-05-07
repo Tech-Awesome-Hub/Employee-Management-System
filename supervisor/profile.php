@@ -1,12 +1,17 @@
 <?php
 session_start();
-if(empty($_SESSION['name']))
-{
-	header('location:../index.php');
-}
 
+if (empty($_SESSION['name'])) {
+  echo "<script>window.location.href='../index.php';</script>";
+  exit();
+}
+if ( $_SESSION['role'] != 3) {
+  echo "<script>window.location.href='../index.php';</script>";
+  exit();
+} 
 include('header.php');
 include('includes/connection.php');
+
 $id = $_SESSION['id'];
 $fetch_data = mysqli_query($connection,"select * from tbl_employees where id='$id'");
 $res = mysqli_fetch_array($fetch_data);

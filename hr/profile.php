@@ -1,25 +1,30 @@
 <?php
 session_start();
-if(empty($_SESSION['name']))
-{
-	header('location:../index.php');
-}
 
+if (empty($_SESSION['name'])) {
+  echo "<script>window.location.href='../index.php';</script>";
+  exit();
+}
+if ( $_SESSION['role'] != 1) {
+  echo "<script>window.location.href='../index.php';</script>";
+  exit();
+} 
 include('header.php');
 include('includes/connection.php');
+
 $id = $_SESSION['id'];
 $fetch_data = mysqli_query($connection,"select * from tbl_employees where id='$id'");
 $res = mysqli_fetch_array($fetch_data);
 ?>
         <div class="page-wrapper">
-            <div class="content">
+        <div class="content">
                 
 				<div class="row">
 
-                       <div class="col-lg-8">
-                        <div class="card-header">
-                                <h4 class="page-title">Profile</h4>
-                            </div>
+        <div class="col-lg-8 mt-2" style="margin: auto;">
+        <div class="card-header bg-primary">
+              <h4 class="page-title text-white">Profile</h4>
+        </div>
         <div class="card mb-4">
           <div class="card-body">
             <div class="row">
