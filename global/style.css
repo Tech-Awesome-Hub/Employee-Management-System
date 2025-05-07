@@ -129,6 +129,18 @@ th, td {
     border: 0.8px solid #eee;
 }
 
+#notifCount {
+    min-width: 20px !important;
+    min-height: 20px !important;
+    display: inline-block;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    padding: 0 6px;
+    white-space: nowrap;
+}
+
+
 #chartContainer {
     position: relative;
     max-width: 100%;
@@ -201,6 +213,10 @@ canvas#attendanceChart {
 @media screen and (min-width: 1200px) {
     .tw-lg table{
         max-width: 80% !important;
+        margin: auto !important;
+    }
+    .tw-lg-2 table{
+        max-width: 50% !important;
         margin: auto !important;
     }
     

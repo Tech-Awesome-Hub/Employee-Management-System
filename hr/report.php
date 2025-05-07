@@ -3,7 +3,7 @@
       include('header.php');
       include('includes/connection.php');
       
-      if (empty($_SESSION['name']) || $_SESSION['role'] != 2) {
+      if (empty($_SESSION['name']) || $_SESSION['role'] != 1) {
           header("Location: ../index.php");
           exit();
       }

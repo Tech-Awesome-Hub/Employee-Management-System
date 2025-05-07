@@ -113,10 +113,10 @@
                 <div class="card shadow-sm">
                     <div class="card-header ">
                         <div class="dropdown has-arrow text-dark d-flex justify-content-end align-items-center">
-                            <div class="w-50">
-                                <h4 class="p-title positiion-relative float-left">Atendance Report</h4>
+                            <div class="" style="width: 30%;">
+                                <h4 class="p-title positiion-relative float-left">REPORT</h4>
                             </div>
-                            <div class="w-50">
+                            <div class="" style="width: 70%;">
                                 <a class="btn btn-primary btn-sm float-right mr-2" href="chart.php"><i class="fa fa-bar-chart"></i></a>
                                 <button class="btn btn-success btn-sm float-right mr-2" onclick="exportTableToExcel()"><i class="fa fa-file-excel-o"></i></button>
                                 <button class="btn btn-danger btn-sm float-right mr-2" onclick="exportToPDF()"><i class="fa fa-file-pdf-o"></i></button>
@@ -287,7 +287,7 @@
 
 <script>
 
-    window.x_name="reports";
+    window.name="reports";
     
     function setTableBody(data, filter_type, expt) {
 

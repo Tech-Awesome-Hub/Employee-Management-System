@@ -68,7 +68,8 @@ CREATE TABLE tbl_users (
   employee_id VARCHAR(50) NOT NULL,
   username VARCHAR(100) UNIQUE,
   password VARCHAR(255),
-  access ENUM('Full', 'Partial', 'View Only') DEFAULT 'Full',
+  access ENUM('Full', 'Partial', 'View Only') DEFAULT 'Partial',
+  has_temp_pass TINYINT DEFAULT 1,
   role TINYINT DEFAULT 0,
   status TINYINT DEFAULT 0,
   FOREIGN KEY (employee_id) REFERENCES tbl_employees(employee_id),
@@ -144,7 +145,13 @@ CREATE TABLE tbl_leaves (
     label VARCHAR(50),
     status TINYINT DEFAULT 0,
 );
-
+INSERT INTO tbl_leaves (code, label) VALUES
+(0, 'Annual'),
+(1, 'Casual'),
+(2, 'Sick'),
+(3, 'Unpaid'),
+(4, 'Maternity'),
+(5, 'Other');
 CREATE TABLE tbl_leave_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
     employee_id VARCHAR(50),
@@ -169,8 +176,10 @@ CREATE TABLE tbl_leave_request (
 
 CREATE TABLE tbl_notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id VARCHAR(50),
     title VARCHAR(255),
+    source_id VARCHAR(50),
+    source_tag VARCHAR(50),
     message TEXT,
     is_read TINYINT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

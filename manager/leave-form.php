@@ -30,7 +30,7 @@
     $employeeResult = $stmt->get_result();
     $stmt->close();
       
-    $lvSql = "SELECT code, label FROM tbl_leave WHERE status = 1";
+    $lvSql = "SELECT code, label FROM tbl_leaves WHERE status = 0";
     $stmt = $connection->prepare($lvSql);
 
     if (!$stmt) {
@@ -68,7 +68,7 @@
         <div class="card-header text-dark d-flex justify-content-between align-items-center">
             <h4 class="mb-0">Leave Application</h4>
             <div class='justify-content-between align-items-center'>
-                <input type='button' onclick='showFilter(this)' class="btn btn-primary btn-sm ml-2" value='View'/>
+                <a href="leave-applications.php" class="btn btn-primary btn-sm mr-2"><i class="fa fa-eye"></i> View</a>
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@
                     
                     <div class="mb-3">
                         <label for="employee" class="form-label">Select Employee</label>
-                        <select class="form-select" id="employee" required>
+                        <select class="form-select form-control" id="employee" required>
                             <!-- Populate from backend -->
                             <option value="">Select an employee</option>
                             <?php while ($emp = mysqli_fetch_assoc($employeeResult)): ?>
@@ -105,7 +105,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="lvtyp" class="form-label">Leave Type</label>
-                            <select class="form-select" id="lvtyp" required>
+                            <select class="form-select form-control" id="lvtyp" required>
                                 <option value="">Select type</option>
                                 <?php while ($row = mysqli_fetch_assoc($lvResult)): ?>
                                     <option value="<?= $row['code'] ?>">
@@ -127,7 +127,7 @@
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary w-50">
-                            <i class="fas fa-paper-plane"></i> Submit Leave
+                            <i class="fa fa-paper-plane"></i> Submit Leave
                         </button>
                     </div>
 

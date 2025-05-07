@@ -54,7 +54,7 @@ if(isset($_REQUEST['login']))
     }
     
     if ($req_role == 3) {
-        $loc = strtolower((getRoleLabel(2)));
+        $loc = strtolower((getRoleLabel($req_role)));
     }
     else {
         $loc = strtolower((getRoleLabel($req_role)));

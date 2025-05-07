@@ -1,5 +1,17 @@
 
 
+<div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input status-checkbox"
+                                name="attendance[${id}]" 
+                                value="off" id="off${id}">
+                            <label class="form-check-label" for="off${id}">Off</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" class="form-check-input status-checkbox"
+                                name="attendance[${id}]" 
+                                value="leave" id="leave${id}">
+                            <label class="form-check-label" for="leave${id}">Leave</label>
+                        </div>
 <div class="card shadow-sm d-lg-block d-none">
                     <div class="card-header text-dark d-flex justify-content-between align-items-center">
                         <h4 class="mb-0 d-lg-block d-none">Atendance Report</h4>
