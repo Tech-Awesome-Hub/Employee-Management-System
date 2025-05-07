@@ -5,7 +5,7 @@ if (empty($_SESSION['name'])) {
   echo "<script>window.location.href='../index.php';</script>";
   exit();
 }
-if ( $_SESSION['role'] != 3) {
+if ( $_SESSION['role'] != 2) {
   echo "<script>window.location.href='../index.php';</script>";
   exit();
 } 

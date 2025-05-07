@@ -48,14 +48,14 @@ $department = $_SESSION['department'];
                 
                 </div>
                 <div class="table-responsive">
-                                    <table class="datatable table table-stripped ">
-                                    <thead>
-                                        <tr>
+                    <table class="datatable table table-stripped responsive-table" id="stable">
+                    <thead class="sticky-header text-white">
+                                            <tr>
+                                            <th>Employee ID</th>
                                             <th>Name</th>
-                                            <th>Username</th>
+                                            <!-- <th>Username</th> -->
                                             <!-- <th>Email</th> -->
                                             <th>Role</th>
-                                            <th>Mobile</th>
                                             <th>Department</th>
                                             <th>Status</th>
                                         </tr>
@@ -68,10 +68,9 @@ $department = $_SESSION['department'];
                                         {
                                         ?>
                                         <tr>
+                                            <td><?php echo $row['employee_id']; ?></td>
                                             <td><?php echo $row['first_name']." ".$row['other_name']." ".$row['last_name']; ?></td>
-                                            <td><?php echo $row['username']; ?></td>
                                             <td><?= getRoleLabel($row['role']) ?></td>
-                                            <td><?php echo $row['phone']; ?></td>
                                             
                                             <td>
                                                 <span class="custom-badge status-grey"><?php echo $row['department'];?></span>
