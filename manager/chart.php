@@ -14,62 +14,202 @@
         exit();
     } 
 
+    $department = $_SESSION['department'];
+    $employeeSql = "SELECT employee_id, first_name, last_name FROM tbl_employees WHERE role != 3 AND department = ? AND status = 1";
+    $stmt = $connection->prepare($employeeSql);
+
+    if (!$stmt) {
+        die('Prepare failed: ' . $connection->error);
+    }
+
+    $stmt->bind_param('s', $department); 
+    $stmt->execute();
+    $employeeResult = $stmt->get_result();
+    $stmt->close();
+
 ?>
-
 <div class="page-wrapper">
-<div class="content">
+  <div class="content">
     <div class="container py-5">
-    <h2 class="mb-4 text-center">Employee Attendance Dashboard</h2>
 
-    <div class="row mb-4">
-        <form id="filterForm">
-            <label for="department">Department:</label>
-            <select  id="department" name="department[]" multiple class="form-control">
-                <option value="">All</option>
-                <option value="HR">HR</option>
-                <option value="Finance">Finance</option>
-                <!-- Add your departments dynamically here -->
-            </select>
+    <div class="filter-container">
+    <form id="filterForm" class="bg-light p-4 rounded shadow-sm">
+        <div class="row  d-flex justify-content-space-evenly">
+            <div class="col-md-5 col-lg-4">
+                <!-- Department Filter -->
+                <div class="w-100">
+                    <label for="department"><strong>Department:</strong></label>
+                    <select id="department" name="department[]" multiple class="form-control"   style="height:150px;">
+                    <option value="">All</option>
+                    <option value="HR">HR</option>
+                    <option value="Account">Account</option>
+                    <option value="Peeling">Peeling</option>
+                    <option value="Sorting">Sorting</option>
+                    <option value="Packaging">Packaging</option>
+                    <option value="Technical">Technical</option>
+                    </select>
+                    <!-- <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple.</small> -->
+                </div>
 
-            <label for="employee">Employee:</label>
-            <select id="employee">
-                <option value="">All</option>
-                <!-- Load employee options dynamically -->
-            </select>
+            </div>
 
-            <label for="filterType">View By:</label>
-            <select id="filterType">
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month" selected>Month</option>
-                <option value="year">Year</option>
-            </select>
+            <div class="col-md-9 col-lg-8">
+                <div class="row">
 
-            <label for="chartType">Chart Type:</label>
-            <select id="chartType" class="form-control">
-                <option value="bar">Bar Chart</option>
-                <option value="pie">Pie Chart</option>
-                <option value="line">Line</option>
-            </select>
+                    <!-- Employee Filter -->
+                    <div class="col-md-5 col-lg-4">
+                        <label for="employee"><strong>Employee:</strong></label>
+                        <select id="employee" class="form-control">
+                        <option value="">All</option>
+                        <?php while ($emp = mysqli_fetch_assoc($employeeResult)): ?>
+                            <option value="<?= $emp['employee_id'] ?>">
+                            <?= htmlspecialchars($emp['first_name']) ?> <?= htmlspecialchars($emp['last_name']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                        </select>
+                    </div>
 
-            <label for="from">From:</label>
-            <input type="date" id="from" value="2025-04-21">
+                    <!-- View By Filter -->
+                    <div class="col-md-5 col-lg-3">
+                        <label for="filterType"><strong>View By:</strong></label>
+                        <select id="filterType" class="form-control">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="month" selected>Month</option>
+                        <option value="year">Year</option>
+                        </select>
+                    </div>
 
-            <label for="to">To:</label>
-            <input type="date" id="to" value="2025-05-20">
+                    <!-- Chart Type Filter -->
+                    <div class="col-md-5 col-lg-3">
+                        <label for="chartType"><strong>Chart Type:</strong></label>
+                        <select id="chartType" class="form-control">
+                        <option value="bar">Bar Chart</option>
+                        <option value="pie">Pie Chart</option>
+                        <option value="line">Line Chart</option>
+                        </select>
+                    </div>
 
-            <button type="submit">Apply Filter</button>
-        </form>
-    </div>
+                </div>
+                <!-- row 2 -->
+                <div class="row">
+                     <!-- From Date Filter -->
+                     <div class="col-md-5 col-lg-3">
+                        <label for="from"><strong>From:</strong></label>
+                        <input type="date" id="from" class="form-control" value="2025-04-21">
+                    </div>
+                    <!-- To Date Filter -->
+                    <div class="col-md-5 col-lg-3">
+                        <label for="to"><strong>To:</strong></label>
+                        <input type="date" id="to" class="form-control" value="2025-05-20">
+                    </div>
 
-    <div id="chartContainer">
-        <canvas id="attendanceChart"></canvas>
-    </div>
+                    <!-- Apply Filter Button -->
+                    <div class="col-3 mt-3">
+                        <button type="submit" class="btn btn-primary w-100 w-md-auto">Apply Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+      <div id="chartContainer" class="bg-white p-4 rounded shadow-sm">
+        <canvas id="attendanceChart" height="400"></canvas>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Modal CSS -->
+<style>
+/* Container for filter form */
+.filter-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style for the form inputs and labels */
+    .filter-container label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .filter-container select, 
+    .filter-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    .filter-container input[type="date"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* Submit button */
+    .filter-container button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .filter-container button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 768px) {
+        .filter-container {
+            padding: 15px;
+        }
+
+        .filter-container select, 
+        .filter-container input {
+            font-size: 12px;
+        }
+
+        .filter-container button {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+    }
+
+    @media (max-width: 480px) {
+        .filter-container {
+            padding: 10px;
+        }
+
+        .filter-container select, 
+        .filter-container input {
+            font-size: 10px;
+        }
+
+        .filter-container button {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+    }
+</style>
+
 <script>
-
-// Modern Chart Enhancements for Attendance Charts
 let attendanceChart = null;
 
 document.getElementById('filterForm').addEventListener('submit', function (e) {
@@ -85,44 +225,30 @@ document.getElementById('filterForm').addEventListener('submit', function (e) {
 
     let url = `./api/loaddt.php?from=${from}&to=${to}&rfrom=attcht`;
 
-    if (filterType) {
-        url += `&filter_type=${encodeURIComponent(filterType)}`;
-    }
-    if (employeeId) {
-        url += `&employee_id=${encodeURIComponent(employeeId)}`;
-    }
+    if (filterType) url += `&filter_type=${encodeURIComponent(filterType)}`;
+    if (employeeId) url += `&employee_id=${encodeURIComponent(employeeId)}`;
     if (selectedDepartments.length > 0) {
         url += `&department=${encodeURIComponent(selectedDepartments.join(','))}`;
     }
 
-    fetch(url,{
-        method: 'GET',
-        credentials: 'include'  // ensures PHP session is sent
-        })
+    fetch(url, { method: 'GET', credentials: 'include' })
         .then(async res => {
-          const text = await res.text();
-          console.log(text);
-          console.log(text)
-        try {
-            const data = JSON.parse(text);
+            const text = await res.text();
+            try {
+                const data = JSON.parse(text);
+                if (!Array.isArray(data)) throw new Error("Data is not an array");
 
-            if (!Array.isArray(data)) throw new Error("Data is not an array");
-
-            if (chartType === 'bar') {
-                renderBarChart(data, filterType);
-            } else if (chartType === 'pie') {
-                renderPieChart(data, filterType);
-            } else if (chartType === 'line') {
-                renderLineChart(data, filterType);
+                switch (chartType) {
+                    case 'bar': renderBarChart(data, filterType); break;
+                    case 'pie': renderPieChart(data, filterType); break;
+                    case 'line': renderLineChart(data, filterType); break;
+                }
+            } catch (err) {
+                console.error("Invalid JSON response:", text);
+                alert("Error loading chart data.");
             }
-        } catch (err) {
-            console.error("Response not JSON or invalid format:", text);
-            throw err;
-        }
-    });
-
+        });
 });
- 
 
 const chartBaseOptions = {
     responsive: true,
@@ -131,38 +257,44 @@ const chartBaseOptions = {
         legend: {
             position: 'top',
             labels: {
-                boxWidth: 12,
-                padding: 15,
+                boxWidth: 14,
+                padding: 20,
                 font: {
                     family: "'Segoe UI', Roboto, sans-serif",
-                    size: 12,
+                    size: 13,
                     weight: '500',
                 },
-            },
+                color: '#333'
+            }
+        },
+        tooltip: {
+            backgroundColor: '#fff',
+            borderColor: '#ccc',
+            borderWidth: 1,
+            titleColor: '#000',
+            bodyColor: '#444',
+            padding: 12,
+            cornerRadius: 6,
+            usePointStyle: true,
         },
         title: {
             display: true,
+            text: '',
             font: {
                 size: 18,
-                weight: '600',
-                family: "'Segoe UI', Roboto, sans-serif"
+                weight: '600'
             },
+            color: '#222',
             padding: { top: 10, bottom: 20 }
-        },
-        tooltip: {
-            mode: 'index',
-            intersect: false,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            titleFont: { weight: 'bold' },
-            bodyFont: { family: "'Segoe UI', Roboto, sans-serif" }
         }
     },
     layout: {
-        padding: 10
+        padding: { top: 20, bottom: 20, left: 10, right: 10 }
     }
 };
 
-function renderBarChart(data, filter_type) {
+
+function renderBarChart(data, filterType) {
     const ctx = document.getElementById('attendanceChart').getContext('2d');
     if (attendanceChart) attendanceChart.destroy();
 
@@ -181,34 +313,22 @@ function renderBarChart(data, filter_type) {
     });
 
     const datasets = [];
-    Object.keys(deptGroups).forEach(dept => {
-        datasets.push({
-            label: `${dept} - Present`,
-            data: deptGroups[dept].present,
-            backgroundColor: 'rgba(75, 192, 192, 0.7)',
-            borderRadius: 4,
-            barPercentage: 0.8
-        });
-        datasets.push({
-            label: `${dept} - Absent`,
-            data: deptGroups[dept].absent,
-            backgroundColor: 'rgba(255, 99, 132, 0.7)',
-            borderRadius: 4,
-            barPercentage: 0.8
-        });
-        datasets.push({
-            label: `${dept} - Leave`,
-            data: deptGroups[dept].leave,
-            backgroundColor: 'rgba(255, 206, 86, 0.7)',
-            borderRadius: 4,
-            barPercentage: 0.8
-        });
-        datasets.push({
-            label: `${dept} - Off`,
-            data: deptGroups[dept].off,
-            backgroundColor: 'rgba(201, 203, 207, 0.7)',
-            borderRadius: 4,
-            barPercentage: 0.8
+    const colors = {
+        present: '#4CAF50',
+        absent: '#F44336',
+        leave: '#FF9800',
+        off: '#9E9E9E'
+    };
+
+    Object.entries(deptGroups).forEach(([dept, values]) => {
+        Object.entries(values).forEach(([key, val]) => {
+            datasets.push({
+                label: `${dept} - ${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                data: val,
+                backgroundColor: colors[key],
+                borderRadius: 4,
+                barPercentage: 0.8
+            });
         });
     });
 
@@ -219,87 +339,144 @@ function renderBarChart(data, filter_type) {
             ...chartBaseOptions,
             plugins: {
                 ...chartBaseOptions.plugins,
-                title: {
-                    ...chartBaseOptions.plugins.title,
-                    text: 'Department Attendance Overview'
-                }
+                title: { ...chartBaseOptions.plugins.title, text: 'Department Attendance Overview' }
             },
             scales: {
-                x: {
-                    stacked: true,
-                    ticks: {
-                        font: { family: "'Segoe UI', Roboto, sans-serif" }
-                    },
-                    grid: { color: '#f0f0f0' }
-                },
+                x: { stacked: true, grid: { color: '#f0f0f0' } },
                 y: {
-                    stacked: true,
                     beginAtZero: true,
+                    stacked: true, 
+                    grid: { color: '#e5e5e5' },
                     ticks: {
-                        font: { family: "'Segoe UI', Roboto, sans-serif" }
-                    },
-                    grid: { color: '#e5e5e5' }
+                        stepSize: 1,
+                        callback: function(value) {
+                        return Number.isInteger(value) ? value : '';
+                        }
+                    }
                 }
             }
         }
     });
 }
 
-function renderPieChart(data, filter_type) {
+// function renderPieChart(present, absent, leave, off) {
+//   const totalPresent = present.reduce((a, b) => a + b, 0);
+//   const totalAbsent  = absent.reduce((a, b) => a + b, 0);
+//   const totalLeave   = leave.reduce((a, b) => a + b, 0);
+//   const totalOff     = off.reduce((a, b) => a + b, 0);
+//   const total        = totalPresent + totalAbsent + totalLeave + totalOff;
+
+//   const ctx = document.getElementById("attendanceChart").getContext("2d");
+//   if (typeof pieChart !== "undefined" && pieChart) pieChart.destroy();
+
+//   pieChart = new Chart(ctx, {
+//     type: "doughnut",
+//     data: {
+//       labels: ["Present", "Absent", "Leave", "Off"],
+//       datasets: [{
+//         data: [totalPresent, totalAbsent, totalLeave, totalOff],
+//         backgroundColor: [
+//           "#0d6efd", // Present
+//           "#dc3545", // Absent
+//           "#ffc107", // Leave
+//           "#6c757d"  // Off
+//         ],
+//         borderRadius: 6,
+//         hoverOffset: 12
+//       }]
+//     },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false,
+//       plugins: {
+//         title: {
+//           display: true,
+//           text: "Overall Attendance Distribution"
+//         },
+//         tooltip: {
+//           backgroundColor: "#fff",
+//           borderColor: "#ccc",
+//           borderWidth: 1,
+//           titleColor: "#000",
+//           bodyColor: "#333",
+//           cornerRadius: 6,
+//           padding: 10,
+//           callbacks: {
+//             label: function(context) {
+//               const value = context.raw;
+//               const percentage = total ? ((value / total) * 100).toFixed(1) : 0;
+//               return `${context.label}: ${value} (${percentage}%)`;
+//             }
+//           }
+//         }
+//       },
+//       cutout: "45%" // Donut hole size
+//     }
+//   });
+// }
+
+function renderPieChart(data) {
     const ctx = document.getElementById('attendanceChart').getContext('2d');
     if (attendanceChart) attendanceChart.destroy();
 
+    // Calculate totals for Present, Absent, Leave, and Off
     const totalStats = { present: 0, absent: 0, leave: 0, off: 0 };
-
     data.forEach(row => {
-        totalStats.present += row.present_days;
-        totalStats.absent += row.absent_days;
-        totalStats.leave += row.leave_days;
-        totalStats.off += row.off_days;
+        totalStats.present += row.present_days || 0;
+        totalStats.absent += row.absent_days || 0;
+        totalStats.leave += row.leave_days || 0;
+        totalStats.off += row.off_days || 0;
     });
+
+    const total = Object.values(totalStats).reduce((a, b) => a + b, 0);
 
     attendanceChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Present', 'Absent', 'Leave', 'Off'],
             datasets: [{
-                data: [
-                    totalStats.present,
-                    totalStats.absent,
-                    totalStats.leave,
-                    totalStats.off
-                ],
+                data: Object.values(totalStats),
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(201, 203, 207, 0.7)'
+                    "#0d6efd", // Present
+                    "#dc3545", // Absent
+                    "#ffc107", // Leave
+                    "#6c757d"  // Off
                 ],
                 borderRadius: 5,
                 hoverOffset: 15
             }]
         },
         options: {
-            ...chartBaseOptions,
+            responsive: true,
             plugins: {
-                ...chartBaseOptions.plugins,
                 title: {
-                    ...chartBaseOptions.plugins.title,
+                    display: true,
                     text: 'Overall Attendance Distribution'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            const percentage = total ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
                 }
             },
-            cutout: '40%'
+            cutout: '45%' // Doughnut style cutout
         }
     });
 }
 
-function renderLineChart(data, filter_type) {
+function renderLineChart(data, filterType) {
     const ctx = document.getElementById('attendanceChart').getContext('2d');
     if (attendanceChart) attendanceChart.destroy();
 
+    // Get unique period labels
     const labels = [...new Set(data.map(row => row.period_label))];
-    const deptGroups = {};
 
+    // Group data by department and their respective attendance stats
+    const deptGroups = {};
     data.forEach(row => {
         const dept = row.department_name || 'Unknown';
         if (!deptGroups[dept]) {
@@ -311,55 +488,28 @@ function renderLineChart(data, filter_type) {
         deptGroups[dept].off.push(row.off_days);
     });
 
+    // Color map for each attendance type
+    const colorMap = {
+        present: '#4CAF50',
+        absent: '#F44336',
+        leave: '#FF9800',
+        off: '#9E9E9E'
+    };
+
+    // Prepare datasets for each department's attendance data
     const datasets = [];
-    Object.keys(deptGroups).forEach(dept => {
-        datasets.push({
-            label: `${dept} - Present`,
-            data: deptGroups[dept].present,
-            borderColor: 'rgba(75, 192, 192, 0.9)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            pointBackgroundColor: 'rgba(75, 192, 192, 0.9)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4
-        });
-        datasets.push({
-            label: `${dept} - Absent`,
-            data: deptGroups[dept].absent,
-            borderColor: 'rgba(255, 99, 132, 0.9)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            pointBackgroundColor: 'rgba(255, 99, 132, 0.9)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4
-        });
-        datasets.push({
-            label: `${dept} - Leave`,
-            data: deptGroups[dept].leave,
-            borderColor: 'rgba(255, 206, 86, 0.9)',
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            pointBackgroundColor: 'rgba(255, 206, 86, 0.9)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4
-        });
-        datasets.push({
-            label: `${dept} - Off`,
-            data: deptGroups[dept].off,
-            borderColor: 'rgba(201, 203, 207, 0.9)',
-            backgroundColor: 'rgba(201, 203, 207, 0.2)',
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            pointBackgroundColor: 'rgba(201, 203, 207, 0.9)',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4
+    Object.entries(deptGroups).forEach(([dept, values]) => {
+        Object.entries(values).forEach(([key, val]) => {
+            datasets.push({
+                label: `${dept} - ${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                data: val,
+                borderColor: colorMap[key],
+                backgroundColor: colorMap[key] + '33', // Light color for fill
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                fill: true,
+                tension: 0.4 // Smooth line
+            });
         });
     });
 
@@ -367,40 +517,38 @@ function renderLineChart(data, filter_type) {
         type: 'line',
         data: { labels, datasets },
         options: {
-            ...chartBaseOptions,
+            responsive: true,
             plugins: {
-                ...chartBaseOptions.plugins,
-                title: {
-                    ...chartBaseOptions.plugins.title,
-                    text: 'Attendance Trends Over Time'
+                title: { display: true, text: 'Attendance Trends Over Time' },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.parsed.y;
+                            const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${context.dataset.label}: ${value} (${percent}%)`;
+                        }
+                    }
                 }
             },
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
+            interaction: { mode: 'index', intersect: false },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: filter_type,
-                        font: { weight: '600' }
-                    },
-                    grid: { color: '#f0f0f0' }
-                },
-                x: {
+                    title: { display: true, text: filterType, font: { weight: '600' } },
+                    grid: { color: '#f0f0f0' },
                     ticks: {
-                        font: { family: "'Segoe UI', Roboto, sans-serif" }
-                    },
-                    grid: { color: '#f9f9f9' }
-                }
+                        stepSize: 1,
+                        callback: function(value) {
+                        return Number.isInteger(value) ? value : '';
+                        }
+                    }
+                },
+                x: { grid: { color: '#f9f9f9' } }
             }
         }
     });
 }
 
-
-// window.onload = loadAttendance;
 </script>
+
 <?php include('footer.php'); ?>
