@@ -1,9 +1,14 @@
 <?php
 session_start();
-if(empty($_SESSION['name']) || $_SESSION['role']!=0)
-{
-    header('location:../index.php');
+if (empty($_SESSION['name'])) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
 }
+if ($_SESSION['role'] != 0) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
+}
+
 include('header.php');
 include('includes/connection.php');
 $fetch_query = mysqli_query($connection, "select max(id) as id from tbl_employees");
@@ -153,8 +158,8 @@ $fetch_query = mysqli_query($connection, "select max(id) as id from tbl_employee
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group gender-select">
-                                        <label class="gen-label">Gender: <span class="text-danger">*</span></label>
-                                        <select class="select form-control" name="gender" required>
+                                        <label class="gen-label">Gender:</label>
+                                        <select class="select" name="gender" required>
                                             <option value="">Select</option>
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
@@ -211,19 +216,15 @@ $fetch_query = mysqli_query($connection, "select max(id) as id from tbl_employee
                                         <label>Role <span class="text-danger">*</span></label>
                                         <select class="select form-control" name="role" required>
                                             <option value="">Select</option>
-                                            <?php
-                                             $fetch_query = mysqli_query($connection, "select code, label from tbl_role");
-                                                while($role = mysqli_fetch_array($fetch_query)){ 
-                                            ?>
-                                            <option value="<?php echo $role['code']; ?>"><?php echo $role['label']; ?></option>
-                                            <?php } ?>
-                                            
+                                            <option value="2">Supervisor</option>
+                                            <option value="4">Factory Hand</option>
+                                           
                                         </select>
                                     </div>
                                 </div>
                             <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="display-block">Status <span class="text-danger">*</span></label>
+                                <label class="display-block">Status</label>
                                 <select class="select form-control" name="status" required>
                                     <option value="">Select</option>
                                     <?php

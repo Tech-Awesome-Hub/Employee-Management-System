@@ -45,7 +45,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'week') {
         $sql = "
@@ -57,7 +57,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'month') {
         $sql = "
@@ -69,7 +69,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     } elseif ($filter_type == 'year') {
         $sql = "
@@ -81,7 +81,7 @@
             SUM(CASE WHEN a.status = 'off' THEN 1 ELSE 0 END) AS off_days
         FROM tbl_attendance a
         JOIN tbl_employees e ON a.employee_id = e.employee_id
-        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND a.department = '$department' AND e.role != 3 AND e.status=1 $employeeFilter
+        WHERE a.attendance_date BETWEEN '$start' AND '$end' AND e.role != 3 AND e.status=1 $employeeFilter
         GROUP BY a.employee_id, period_label";
     }
     

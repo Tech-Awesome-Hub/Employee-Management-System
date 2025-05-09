@@ -38,8 +38,8 @@ include('includes/connection.php');
                                         {
                                         ?>
                                         <tr>
-                                            <td><?php echo $row['department_id']; ?></td>
-                                            <td><?php echo $row['department_name']; ?></td>
+                                            <td><?php echo $row['code']; ?></td>
+                                            <td><?php echo $row['label']; ?></td>
                                             
                                             <?php if($row['status']==1) { ?>
                                             <td><span class="custom-badge status-green">Active</span></td>

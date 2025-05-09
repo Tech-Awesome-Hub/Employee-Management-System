@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(empty($_SESSION['name']))
+if(empty($_SESSION['name']) || $_SESSION['role']!=0)
 {
     header('location:../index.php');
 }
@@ -43,16 +43,10 @@ include('includes/connection.php');
                     <div class="col-lg-8 offset-lg-2">
                         <form method="post" >
                             <div class="row">
-                                <div class="col-sm-6">
+                            <div class="col-sm-6">
                                     <div class="form-group shift-select">
                                         <label class="gen-label">Shift:</label>
-                                        <select class="select form-control" name="shift" required>
-                                            <option value="" selected>Select</option>
-                                            <option value="Day">Day</option>
-                                            <option value="Night">Night</option>
-                                            <option value="Afternoon">Afternoon</option>
-                                            <option value="All">All</option>
-                                        </select>
+                                        <input class="form-control" name="shift" required />
                                     </div>
                                 </div>
                             </div>

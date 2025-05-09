@@ -32,7 +32,7 @@ include('includes/connection.php');
                                         $id = $_GET['ids'];
                                         $delete_query = mysqli_query($connection, "delete from tbl_location where id='$id'");
                                         }
-                                        $fetch_query = mysqli_query($connection, "select * from tbl_location");
+                                        $fetch_query = mysqli_query($connection, "select * from tbl_estate");
                                         while($row = mysqli_fetch_array($fetch_query))
                                         {
                                         ?>

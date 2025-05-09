@@ -60,17 +60,30 @@ if(isset($_REQUEST['login']))
         $loc = strtolower((getRoleLabel($req_role)));
     }
 
+
     if($req_role == 0) {
-        $fetch_query = mysqli_query($connection, "select * from tbl_admin where username ='$username' and password = '$pwd' and role='$req_role'");
+        $stmt = $connection->prepare("select * from tbl_admin where username ='$username' and password = '$pwd'");
     }
     else {
-        $fetch_query = mysqli_query($connection, "select * from tbl_employees where username ='$username' and password = '$pwd' and role='$req_role'");
+        $stmt = $connection->prepare("select * from tbl_users where username ='$username' and password = '$pwd' and role='$req_role'");
+    }
+
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Database prepare failed: ' . $connection->error]);
+        exit;
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $res = [];
+    while ($row = $result->fetch_assoc()) {
+        $res[] = $row;
     }
     
-    $res = mysqli_num_rows($fetch_query);
-    if($res>0)
+    if(count($res)>0)
     {
-        $data = mysqli_fetch_array($fetch_query);
+        $data = $res;
         $name = $data['first_name'].' '.$data['last_name'];
         $role = $data['role'];
         $dept = $data['department'];

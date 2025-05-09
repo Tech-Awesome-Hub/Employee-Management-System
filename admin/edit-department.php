@@ -48,11 +48,11 @@ if(isset($_REQUEST['save-department']))
                         <form method="post">
                           <div class="form-group">
                                 <label>Department Id</label>
-                                <input class="form-control" type="text" name="departmentid" value="<?php  echo $row['department_id'];  ?>">
+                                <input class="form-control" type="text" name="departmentid" value="<?php  echo $row['code'];  ?>">
                             </div>
                             <div class="form-group">
                                 <label>Department Name</label>
-                                <input class="form-control" type="text" name="department" value="<?php  echo $row['department_name'];  ?>">
+                                <input class="form-control" type="text" name="department" value="<?php  echo $row['label'];  ?>">
                             </div>
                             
                             <div class="form-group">

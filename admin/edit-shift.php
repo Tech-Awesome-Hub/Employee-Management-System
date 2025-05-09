@@ -1,6 +1,6 @@
 <?php 
 session_start();
-if(empty($_SESSION['name']))
+if(empty($_SESSION['name']) || $_SESSION['role']!=3)
 {
     header('location:../index.php');
 }
@@ -48,13 +48,8 @@ if(isset($_REQUEST['save-shift']))
                             <div class="row">
                                 <div class="col-sm-6">
                                         <div class="form-group shift-select">
-                                            <label class="shift-label">Shift:</label>
-                                            <select class="select" name="shift" required>
-                                            <option value="">Select</option>
-                                            <option value="Day" <?php if($row['shift']=="Day"){?> selected="selected"; <?php } ?>>Day</option>
-                                            <option value="Night" <?php if($row['shift']=="Night"){?> selected="selected"; <?php } ?>>Night</option>
-                                            <option value="Day-Night" <?php if($row['shift']=="Day-Night"){?> selected="selected"; <?php } ?>>Day and Night</option>
-                                            </select>
+                                            <label class="gen-label">Shift:</label>
+                                            <input class="form-control" name="shift" value="<?php echo $row['shift'] ?>" required />
                                         </div>
                                     </div>
                                 </div>

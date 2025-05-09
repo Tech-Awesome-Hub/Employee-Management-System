@@ -370,7 +370,7 @@ function deplevcht($connection) {
     $stmt = $connection->prepare($sql);
     if (!$stmt) {
         http_response_code(500);
-        echo json_encode(['error' => 'Database prepare failed: ' . $connection->error]);
+        echo json_encode(['error' => 'Database prepare failed: ' . $conn->error]);
         exit;
     }
     $stmt->bind_param($types, ...$params);

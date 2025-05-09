@@ -4,6 +4,7 @@ if(!empty($_SESSION['name']))
 {
 	unset($_SESSION['name']);
 	unset($_SESSION['cur_loc']);
+	unset($_SESSION['role']);
 	header('location:../index.php');
 }
 ?>

@@ -92,16 +92,16 @@ $department = $_SESSION['department'];
 						</div>
 					</div>
 					<div class="col-12 col-md-6 col-lg-4 col-xl-4">
-                        <div class="card member-panel">
+            <div class="card member-panel">
 							<div class="card-header bg-white">
 								<h4 class="card-title mb-0">Absence Trends</h4>
 							</div>
-                            <div class="card-body d-flex justify-content-center">
-                                <canvas id="absenceChart" class="db-charts"></canvas>
-                            </div>
-                            
-                        </div>
+                    <div class="card-body d-flex justify-content-center">
+                        <canvas id="absenceChart" class="db-charts"></canvas>
                     </div>
+                    
+                </div>
+            </div>
 				</div>
                 <!-- role 2 -->
                 <div class="row">
@@ -130,35 +130,34 @@ $department = $_SESSION['department'];
                             </ul>
                         </div>
 					</div>
-					  <div class="col-12 col-md-6 col-lg-4 col-xl-4">
-                        <div class="card member-panel">
+					<div class="col-12 col-md-6 col-lg-4 col-xl-4">
+            <div class="card member-panel">
 							<div class="card-header bg-white">
 								<h4 class="card-title mb-0">Attendace by Month</h4>
 							</div>
-                            <div class="card-body d-flex justify-content-center">
-                                <canvas id="monthlyChart" class="db-charts"></canvas>
-                            </div>
-                            
-                        </div>
+                    <div class="card-body d-flex justify-content-center">
+                        <canvas id="monthlyChart" class="db-charts"></canvas>
                     </div>
-				</div>
-                <!-- role 3 -->
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-8 col-xl-8 d-flex justify-content-space-between ">
+                    
+                </div>
+              </div>
+				  </div>
+          <!-- role 3 -->
+          <div class="row">
+              <div class="col-12 col-md-6 col-lg-8 col-xl-8 d-flex justify-content-space-between ">
                         
-					</div>
-					  <div class="col-12 col-md-6 col-lg-4 col-xl-4">
-                        <div class="card member-panel">
-							<div class="card-header bg-white">
-								<h4 class="card-title mb-0">Attendance Status Breakdown</h4>
-							</div>
-                            <div class="card-body d-flex justify-content-center">
-                                <canvas id="statusChart" class="db-charts"></canvas>
-                            </div>
-                            
-                        </div>
-                    </div>
-				</div>
+              </div>
+              <div class="col-12 col-md-6 col-lg-4 col-xl-4">
+                <div class="card member-panel">
+                <div class="card-header bg-white">
+                  <h4 class="card-title mb-0">Attendance Status Breakdown</h4>
+                </div>
+                  <div class="card-body d-flex justify-content-center">
+                      <canvas id="statusChart" class="db-charts"></canvas>
+                  </div>  
+                </div>
+              </div>
+            </div>
 				<!-- Role end -->
             </div>
         </div>

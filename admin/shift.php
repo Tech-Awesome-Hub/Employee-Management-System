@@ -1,9 +1,14 @@
 <?php
 session_start();
-if(empty($_SESSION['name']))
-{
-    header('location:../index.php');
+if (empty($_SESSION['name'])) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
 }
+if ($_SESSION['role'] != 0) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
+}
+
 include('header.php');
 include('includes/connection.php');
 ?>
@@ -19,9 +24,10 @@ include('includes/connection.php');
                     </div>
                
                 </div>
-                <div class="table-responsive">
-                                    <table class="datatable table table-stripped ">
-                                    <thead>
+                <div class="table-wrapper tw-lg">
+                                    <table class="datatable table table-stripped">
+                                        <!-- responsive-table  -->
+                                    <thead class="sticky-header">
                                         <tr>
                                             <th>ID</th>
                                             <th>Shift</th>

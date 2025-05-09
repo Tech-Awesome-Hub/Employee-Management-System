@@ -41,14 +41,22 @@ $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                         <thead class="sticky-header">
                             <tr>
                                 <th rowspan="2">Employee</th>
-                                <?php for ($week = 1; $week <= 2; $week++): ?>
-                                    <?php foreach ($days as $day): ?>
+                                <?php
+                                $startDate = strtotime('monday this week'); // or use 'today' if you prefer to start from today
+
+                                for ($week = 0; $week < 2; $week++):
+                                    foreach ($days as $i => $day): 
+                                        $date = strtotime("+".($week * 7 + $i)." days", $startDate);
+                                ?>
                                         <th>
-                                            <?= date('d M', strtotime("+" . (($week - 1) * 7) . " days " . "next $day")) ?>
-                                            <br><?= $day ?> (Week <?= $week ?>)
+                                            <?= date('d M', $date) ?><br>
+                                            <?= $day ?> (Week <?= $week + 1 ?>)
                                         </th>
-                                    <?php endforeach; ?>
-                                <?php endfor; ?>
+                                <?php 
+                                    endforeach;
+                                endfor;
+                                ?>
+
                             </tr>
                         </thead>
                         <tbody id="timesheet-body">

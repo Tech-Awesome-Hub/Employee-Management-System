@@ -1,9 +1,14 @@
 <?php 
 session_start();
-if(empty($_SESSION['name']))
-{
-    header('location:../index.php');
+if (empty($_SESSION['name'])) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
 }
+if ($_SESSION['role'] != 0) {
+    echo "<script>window.location.href='../index.php';</script>";
+    exit();
+}
+
 include('header.php');
 include('includes/connection.php');
 
@@ -11,14 +16,14 @@ $id = $_GET['id'];
 $fetch_query = mysqli_query($connection, "select * from tbl_employees where id='$id'");
 $row = mysqli_fetch_array($fetch_query);
 
-if(isset($_REQUEST['save-emp']))
+if(isset($_REQUEST['update-emp']))
 {
     $first_name = $_REQUEST['first_name'];
     $other_name = $_REQUEST['other_name'];
     $last_name = $_REQUEST['last_name'];
-    $username = $_REQUEST['username'];
-    $pwd = $_REQUEST['pwd'];
-    $employee_id = 'DP'.$emp_id;
+    // $username = $_REQUEST['username'];
+    // $pwd = $_REQUEST['pwd'];
+    // $employee_id = $_REQUEST['employee_id'];
     $dob = db_date($_REQUEST['dob']);
     $por = $_REQUEST['por'];
     $next_of_kin = $_REQUEST['next_of_kin'];
@@ -28,13 +33,13 @@ if(isset($_REQUEST['save-emp']))
     $gender = $_REQUEST['gender'] || '';
     $joining_date = db_date($_REQUEST['joining_date']);
     $phone = $_REQUEST['phone'];
-    $shift = $_REQUEST['shift'];
+    // $shift = $_REQUEST['shift'];
     $department = $_REQUEST['department'];
     $role = $_REQUEST['role'];
     $status = $_REQUEST['status'];
 
 
-      $update_query = mysqli_query($connection, "update tbl_employees set first_name='$first_name', other_name='$other_name', last_name='$last_name', username='$username', password='$pwd', employee_id='$employee_id', dob='$dob', por='$por', next_of_kin='$next_of_kin', ssnit_no='$ssnit_no', gh_card_no='$gh_card_no', nhis_no='$nhis_no', gender='$gender', joining_date = '$joining_date', phone='$phone',  shift='$shift', department='$department', role='$role', status='$status' where id='$id'");
+      $update_query = mysqli_query($connection, "update tbl_employees set first_name='$first_name', other_name='$other_name', last_name='$last_name', dob='$dob', por='$por', next_of_kin='$next_of_kin', ssnit_no='$ssnit_no', gh_card_no='$gh_card_no', nhis_no='$nhis_no', gender='$gender', joining_date = '$joining_date', phone='$phone', department='$department', role='$role', status='$status' where id='$id'");
       if($update_query>0)
       {
           $msg = "Employee updated successfully";
@@ -90,20 +95,15 @@ if(isset($_REQUEST['save-emp']))
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Username <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="username" value="<?php echo $row['username'];  ?>">
+                                        <input class="form-control" type="text" name="username" value="<?php echo $row['username'];  ?>" disabled>
                                     </div>
                                 </div>
-                                <!-- <div class="col-sm-6">
+                                <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Email <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="email" name="emailid" value="<?php echo $row['emailid'];  ?>">
+                                        <label>Password <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="pwd" value="<?php echo $row['password'];  ?>" disabled>
                                     </div>
-                                </div> -->
-                                <!-- <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Password</label>
-                                        <input class="form-control" type="password" name="pwd" value="<?php echo $row['password'];  ?>">
-                                </div> -->
+                                </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Employee ID <span class="text-danger">*</span></label>
@@ -153,8 +153,6 @@ if(isset($_REQUEST['save-emp']))
                                         <label class="gen-label">Gender:</label>
                                         <select class="select" name="gender" required>
                                             <option value="">Select</option>
-                                            <!-- <option value="Male" <?php if($row['gender']=="1"){?> selected="selected"; <?php } ?>>Male</option>
-                                            <option value="Female" <?php if($row['gender']=="0"){?> selected="selected"; <?php } ?>>Female</option> -->
                                             <option value="Male" <?php if($row['gender']=="Male"){?> selected="selected"; <?php } ?>>Male</option>
                                             <option value="Female" <?php if($row['gender']=="Female"){?> selected="selected"; <?php } ?>>Female</option>
                                         </select>
@@ -174,21 +172,7 @@ if(isset($_REQUEST['save-emp']))
                                         <input class="form-control" type="text" name="phone" value="<?php echo $row['phone'];  ?>">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Shift <span class="text-danger">*</span></label>
-                                        <select class="select" name="shift" required>
-                                            <option value="">Select</option>
-                                            <?php
-                                             $fetch_query = mysqli_query($connection, "select shift from tbl_shift where status=1");
-                                                while($shift = mysqli_fetch_array($fetch_query)){ 
-                                            ?>
-                                            <option value="<?php echo $shift['shift']; ?>"><?php echo $shift['shift']; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                               
+                                
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Department <span class="text-danger">*</span></label>
@@ -236,7 +220,7 @@ if(isset($_REQUEST['save-emp']))
                         </div>
                     </div>
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn" name="add-employee">Add Employee</button>
+                                <button type="submit" class="btn btn-primary submit-btn" name="update-emp">Update Employee</button>
                             </div>
                         </form>
 
